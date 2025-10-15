@@ -6,8 +6,7 @@ import os
 # No .env per spec; default DSN below. Adjust if needed.
 # MySQL DSN (no .env as requested)
 # Ensure MySQL is running and database `baapmeet` exists
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:9699@localhost:3306/baapmeet?charset=utf8mb4")
-
+DATABASE_URL = "mysql+pymysql://appuser:strong_password_here@localhost:3306/your_app_db"
 
 class Base(DeclarativeBase):
     pass
