@@ -99,6 +99,16 @@ class RoomManager:
 manager = RoomManager()
 
 
+async def _heartbeat_task(websocket: WebSocket):
+    try:
+        while True:
+            await asyncio.sleep(25)
+            await websocket.send_text(json.dumps({"type": "ping"}))
+    except Exception:
+        # connection closed or failed; loop will exit
+        pass
+
+
 @router.websocket("/ws/meetings/{meeting_id}")
 async def websocket_endpoint(websocket: WebSocket, meeting_id: str, db: Session = Depends(get_db)):
     token = websocket.query_params.get("token")
@@ -123,6 +133,9 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str, db: Session 
     await websocket.accept()
     conn = Connection(websocket, user.id, user.name)
     manager.add(meeting_id, conn)
+
+    # Start heartbeat keepalive
+    heartbeat = asyncio.create_task(_heartbeat_task(websocket))
 
     # Ensure participant exists (idempotent)
     p = (
@@ -219,6 +232,7 @@ async def websocket_endpoint(websocket: WebSocket, meeting_id: str, db: Session 
     except WebSocketDisconnect:
         pass
     finally:
+        heartbeat.cancel()
         manager.remove(meeting_id, conn)
         # mark left
         from sqlalchemy import func
