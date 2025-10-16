@@ -100,8 +100,9 @@ manager = RoomManager()
 
 
 @router.websocket("/{meeting_id}")
-async def websocket_endpoint(websocket: WebSocket, meeting_id: str, db: Session = Depends(get_db)):
-    token = websocket.query_params.get("token")
+async def websocket_endpoint(websocket: WebSocket, meeting_id: str, token: str = None, db: Session = Depends(get_db)):
+    if token is None:
+        token = websocket.query_params.get("token")
     if not token:
         await websocket.close(code=4401)
         return
