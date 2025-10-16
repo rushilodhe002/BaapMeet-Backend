@@ -10,7 +10,7 @@ from .database import get_db
 from .models import Meeting, Participant, User, ChatMessage
 
 
-router = APIRouter()
+router = APIRouter(prefix="/ws/meetings", tags=["WebSocket"])
 
 
 class Connection:
@@ -99,7 +99,7 @@ class RoomManager:
 manager = RoomManager()
 
 
-@router.websocket("/ws/meetings/{meeting_id}")
+@router.websocket("/{meeting_id}")
 async def websocket_endpoint(websocket: WebSocket, meeting_id: str, db: Session = Depends(get_db)):
     token = websocket.query_params.get("token")
     if not token:
