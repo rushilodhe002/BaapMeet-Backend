@@ -11,7 +11,7 @@ def health_check():
     """
     return {
         "status": "ok",
-        "message": "BaapMeet backend is healthy ✅",
+        "message": "BaapMeet backend is healthy ",
         "timestamp": datetime.utcnow().isoformat() + "Z"
     }
 
