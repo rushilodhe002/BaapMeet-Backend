@@ -7,6 +7,7 @@ from .routers import users as users_router
 from .routers import meetings as meetings_router
 from .routers import config as config_router
 from .routers import logs as logs_router
+from .routers import health as health_router
 from . import ws as ws_module
 
 
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
     app.include_router(config_router.router)
     app.include_router(logs_router.router)
     app.include_router(ws_module.router)
+    app.include_router(health_router.router)
 
     @app.on_event("startup")
     def on_startup():
